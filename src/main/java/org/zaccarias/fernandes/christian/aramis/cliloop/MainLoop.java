@@ -20,7 +20,7 @@ public class MainLoop {
     public void runMainLoop() throws IOException {
         boolean exitFlag = false;
         while (!exitFlag) {
-            System.out.println("1:Criar\n2:Ponto\n3:Extrato\n4:Sair");
+            System.out.println("1:Criar\n2:Ponto\n3:Extrato\n4:Editar\n5:Sair");
 
             String input = reader.readLine();
             switch (input) {
@@ -34,6 +34,9 @@ public class MainLoop {
                     runExtratoLoop();
                     break;
                 case "4":
+                    runEditarLoop();
+                    break;
+                case "5":
                     exitFlag = true;
                     break;
                 default:
@@ -131,5 +134,54 @@ public class MainLoop {
             break;
         }
     }
-    public void runEditarLoop()
+    public void runEditarLoop() throws IOException {
+        if (funcionarioClassList.isEmpty()) {
+            System.out.println("Não há funcionário para editar.\n");
+            return;
+        }
+        boolean exitFlag = false;
+
+        while (!exitFlag) {
+            IntStream.range(0, funcionarioClassList.size()).forEach(index -> {
+                System.out.println(index + " - " + funcionarioClassList.get(index).toString());
+            });
+
+            System.out.println("Digite o número para editar:");
+            int input = Integer.parseInt(reader.readLine());
+
+            FuncionarioClass funcionario = funcionarioClassList.get(input);
+
+            System.out.println("0: Nome\n1: Tipo\n2: Cargo\n");
+            input = Integer.parseInt(reader.readLine());
+
+            switch (input) {
+                case 0:
+                    System.out.println("Digite o novo nome:\n");
+                    String nome = reader.readLine();
+                    funcionario.setName(nome);
+                    break;
+                case 1:
+                    System.out.println("Digite o nome tipo: (Horista ou Mensalista)\n");
+                    try {
+                        TiposEnum tipo = TiposEnum.fromString(reader.readLine());
+                        funcionario.setTipo(tipo);
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Tipo inválido\n");
+                    }
+                    break;
+                case 2:
+                    System.out.println("Digite o novo cargo:\n");
+                    try {
+                        CargosEnum cargo = CargosEnum.fromString(reader.readLine());
+                        funcionario.setCargo(cargo);
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Cargo inválido\n");
+                    }
+                    break;
+            }
+            exitFlag = true;
+            System.out.println("Funcionário editado:\n");
+            System.out.println(funcionario.toString());
+        }
+    }
 }
